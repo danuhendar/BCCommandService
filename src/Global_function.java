@@ -71,10 +71,14 @@ public class Global_function {
     SQLConnection sqlcon = new SQLConnection();
     Connection con;
     MqttClient client_transreport = null; 
-    public Global_function(){
-       	Read_Setting_ini();  
-       	con = sqlcon.get_connection_db(getIp_database(),getUser_database(),getPass_database(),getPort_database(),getNama_database());
-           inter_login  = new Implement_ga(con);
+    Entity en;
+    
+    public Global_function(Boolean include_connection){
+       	en = new Entity();
+    	Read_Setting_ini();  
+    	if(include_connection) {
+    	   con = sqlcon.get_connection_db(en.getIp_database(),en.getUser_database(),en.getPass_database(),en.getPort_database(),en.getNama_database());
+    	   inter_login  = new Implement_ga(con);
            get_ConnectionMQtt();
            is_proses_setting_main();
            if(con == null) {
@@ -83,201 +87,117 @@ public class Global_function {
            }else {
            	System.out.println("KONEK KE DB UTAMA");
            }
+    	}else {
+    		
+    	}
            
-       }
+     }
 
 
-    String ip_broker;
-       String port_broker;
-       String username_broker;
-       String password_broker;
-       String cleansession;
-       String keepalive;
-       String reconnect;
-       String will_retained;
-       String is_mongo_db;
-       String ip_mongodb;
-       String port_mongodb;
-       String max_inflight;
-       String ip_database;
-       String user_database;
-       String pass_database;
-       String port_database;
-       String nama_database;
-       String id_reporter;
-       String cabang;
-       String topic;
-       String tampilkan_query_console;
-       
-       public String getTampilkan_query_console() {
-   		return tampilkan_query_console;
-   	}
+       	
+   	public String get_id(boolean is_sub_id){
+        String res = "";
+        try {
+              int year = Calendar.getInstance().get(Calendar.YEAR);
+              int month = Calendar.getInstance().get(Calendar.MONTH)+1;
+              String bulan = "";
+              if(month<10){
+                  bulan = "0"+month;
+              }else{
+                  bulan = ""+month;
+              }
+              int d = Calendar.getInstance().get(Calendar.DATE);
+              String tanggal = "";
+              if(d<10){
+                  tanggal = "0"+d;
+              }else{
+                  tanggal = ""+d;
+              }
+              int h = Calendar.getInstance().get(Calendar.HOUR);
+              String jam = "";
+              if(h<10){
+                  jam = "0"+h;
+              }else{
+                  jam = ""+h;
+              }
+              int min = Calendar.getInstance().get(Calendar.MINUTE);
+              String menit = "";
+              if(min<10){
+                  menit = "0"+min;
+              }else{
+                  menit = ""+min;
+              }
+              int sec = Calendar.getInstance().get(Calendar.SECOND);
+              String detik = "";
+              if(sec<10){
+                  detik = "0"+sec;
+              }else{
+                  detik = ""+sec;
+              }
+              
+              String concat = "";
+              if(is_sub_id) {
+            	  concat = year+""+bulan+""+tanggal+""+jam+""+menit+""+detik;
+              }else {
+            	  concat = year+""+bulan+""+tanggal+""+jam+""+menit;
+              }
+              
+                        
+              res = concat;                      
+        } catch (Exception e) {
+              res = "";  
+        }
+        
+        return res;
+    }
+    
+    public String get_time_diff(String time1,String time2) {
+		String res = "";
+		try {
+			// Dates to be parsed
+	     
+	  
+	        // Creating a SimpleDateFormat object
+	        // to parse time in the format HH:MM:SS
+	        SimpleDateFormat simpleDateFormat
+	            = new SimpleDateFormat("HH:mm:ss");
+	  
+	        // Parsing the Time Period
+	        Date date1 = simpleDateFormat.parse(time1);
+	        Date date2 = simpleDateFormat.parse(time2);
+	  
+	        // Calculating the difference in milliseconds
+	        long differenceInMilliSeconds
+	            = Math.abs(date2.getTime() - date1.getTime());
+	  
+	        // Calculating the difference in Hours
+	        long differenceInHours
+	            = (differenceInMilliSeconds / (60 * 60 * 1000))
+	              % 24;
+	  
+	        // Calculating the difference in Minutes
+	        long differenceInMinutes
+	            = (differenceInMilliSeconds / (60 * 1000)) % 60;
+	  
+	        // Calculating the difference in Seconds
+	        long differenceInSeconds
+	            = (differenceInMilliSeconds / 1000) % 60;
+	  
+	        String time_diff = "" + differenceInHours + ":"
+		            + differenceInMinutes + ":"
+		            + differenceInSeconds + "";
+	        // Printing the answer
+	        //System.out.println(time_diff);
+	        
+	        res = time_diff;
+	    
+		}catch(Exception exc) {
+			
+		}
+		
+		return res;
+	}
 
-   	public void setTampilkan_query_console(String tampilkan_query_console) {
-   		this.tampilkan_query_console = tampilkan_query_console;
-   	}
-   			
-       
-       
-       	public String getCabang() {
-   		return cabang;
-   	}
-
-   	public void setCabang(String cabang) {
-   		this.cabang = cabang;
-   	}
-
-   	public String getTopic() {
-   		return topic;
-   	}
-
-   	public void setTopic(String topic) {
-   		this.topic = topic;
-   	}
-
-       	public String getIp_broker() {
-   		return ip_broker;
-   	}
-
-   	public void setIp_broker(String ip_broker) {
-   		this.ip_broker = ip_broker;
-   	}
-
-   	public String getPort_broker() {
-   		return port_broker;
-   	}
-
-   	public void setPort_broker(String port_broker) {
-   		this.port_broker = port_broker;
-   	}
-
-   	public String getUsername_broker() {
-   		return username_broker;
-   	}
-
-   	public void setUsername_broker(String username_broker) {
-   		this.username_broker = username_broker;
-   	}
-
-   	public String getPassword_broker() {
-   		return password_broker;
-   	}
-
-   	public void setPassword_broker(String password_broker) {
-   		this.password_broker = password_broker;
-   	}
-
-   	public String getCleansession() {
-   		return cleansession;
-   	}
-
-   	public void setCleansession(String cleansession) {
-   		this.cleansession = cleansession;
-   	}
-
-   	public String getKeepalive() {
-   		return keepalive;
-   	}
-
-   	public void setKeepalive(String keepalive) {
-   		this.keepalive = keepalive;
-   	}
-
-   	public String getReconnect() {
-   		return reconnect;
-   	}
-
-   	public void setReconnect(String reconnect) {
-   		this.reconnect = reconnect;
-   	}
-
-   	public String getWill_retained() {
-   		return will_retained;
-   	}
-
-   	public void setWill_retained(String will_retained) {
-   		this.will_retained = will_retained;
-   	}
-
-   	public String getIs_mongo_db() {
-   		return is_mongo_db;
-   	}
-
-   	public void setIs_mongo_db(String is_mongo_db) {
-   		this.is_mongo_db = is_mongo_db;
-   	}
-
-   	public String getIp_mongodb() {
-   		return ip_mongodb;
-   	}
-
-   	public void setIp_mongodb(String ip_mongodb) {
-   		this.ip_mongodb = ip_mongodb;
-   	}
-
-   	public String getPort_mongodb() {
-   		return port_mongodb;
-   	}
-
-   	public void setPort_mongodb(String port_mongodb) {
-   		this.port_mongodb = port_mongodb;
-   	}
-
-   	public String getMax_inflight() {
-   		return max_inflight;
-   	}
-
-   	public void setMax_inflight(String max_inflight) {
-   		this.max_inflight = max_inflight;
-   	}
-
-   	public String getIp_database() {
-   		return ip_database;
-   	}
-
-   	public void setIp_database(String ip_database) {
-   		this.ip_database = ip_database;
-   	}
-
-   	public String getUser_database() {
-   		return user_database;
-   	}
-
-   	public void setUser_database(String user_database) {
-   		this.user_database = user_database;
-   	}
-
-   	public String getPass_database() {
-   		return pass_database;
-   	}
-
-   	public void setPass_database(String pass_database) {
-   		this.pass_database = pass_database;
-   	}
-
-   	public String getPort_database() {
-   		return port_database;
-   	}
-
-   	public void setPort_database(String port_database) {
-   		this.port_database = port_database;
-   	}
-
-   	public String getNama_database() {
-   		return nama_database;
-   	}
-
-   	public void setNama_database(String nama_database) {
-   		this.nama_database = nama_database;
-   	}
-
-   	public String getId_reporter() {
-   		return id_reporter;
-   	}
-
-   	public void setId_reporter(String id_reporter) {
-   		this.id_reporter = id_reporter;
-   	}
 
 
    public void Read_Setting_ini() {
@@ -295,28 +215,31 @@ public class Global_function {
    	            ex.printStackTrace();
    	        }
    	        
-   	        setIp_broker(obj.get("ip_broker").toString());
-   	        setPort_broker(obj.get("port_broker").toString());
-   	        setUsername_broker(obj.get("username_broker").toString());
-   	        setPassword_broker(obj.get("password_broker").toString());
-   	        setCleansession(obj.get("cleansession").toString());
-   	        setKeepalive(obj.get("keepalive").toString());
-   	        setReconnect(obj.get("reconnect").toString());
-   	        setWill_retained(obj.get("will_retained").toString());
-   	        setIs_mongo_db(obj.get("is_mongo_db").toString());
-   	        setIp_mongodb(obj.get("ip_mongodb").toString());
-   	        setPort_mongodb(obj.get("port_mongodb").toString());
-   	        setMax_inflight(obj.get("max_inflight").toString());
-   	        setIp_database(obj.get("ip_database").toString());
-   	        setUser_database(obj.get("user_database").toString());
-   	        setPass_database(obj.get("pass_database").toString());
-   	        setPort_database(obj.get("port_database").toString());
-   	        setNama_database(obj.get("nama_database").toString());
-   	        setId_reporter(obj.get("id_reporter").toString());
-   	        setCabang(obj.get("cabang").toString());
-   	        setTopic(obj.get("topic").toString());
-   	        setTampilkan_query_console(obj.get("tampilkan_query_console").toString());
+   	        en.setIp_broker(obj.get("ip_broker").toString());
+   	        en.setPort_broker(obj.get("port_broker").toString());
+   	        en.setUsername_broker(obj.get("username_broker").toString());
+   	        en.setPassword_broker(obj.get("password_broker").toString());
+   	        en.setCleansession(obj.get("cleansession").toString());
+   	        en.setKeepalive(obj.get("keepalive").toString());
+   	        en.setReconnect(obj.get("reconnect").toString());
+   	        en.setWill_retained(obj.get("will_retained").toString());
+   	        en.setIs_mongo_db(obj.get("is_mongo_db").toString());
+   	        en.setIp_mongodb(obj.get("ip_mongodb").toString());
+   	        en.setPort_mongodb(obj.get("port_mongodb").toString());
+   	        en.setMax_inflight(obj.get("max_inflight").toString());
+   	        en.setIp_database(obj.get("ip_database").toString());
+   	        en.setUser_database(obj.get("user_database").toString());
+   	        en.setPass_database(obj.get("pass_database").toString());
+   	        en.setPort_database(obj.get("port_database").toString());
+   	        en.setNama_database(obj.get("nama_database").toString());
+   	        en.setId_reporter(obj.get("id_reporter").toString());
+   	        en.setCabang(obj.get("cabang").toString());
+   	        en.setTopic(obj.get("topic").toString());
+   	        en.setTampilkan_query_console(obj.get("tampilkan_query_console").toString());
+   	        en.setBatasMenit(obj.get("batas_menit").toString());
+	        
    	        System.out.println("Load Setting Sukses");
+   	        br.close();
        	}catch(Exception exc) {
        		exc.printStackTrace();
        	}
@@ -329,7 +252,7 @@ public class Global_function {
        		
        		//Properties p = new Properties(); 
    	        //p.load(new FileInputStream("setting.ini"));
-   	        String id_reporter = getId_reporter();
+   	        String id_reporter = en.getId_reporter();
    	         
        		int qos_message = 0;
        		String rtopic_command = "SETTING_MAIN/"+id_reporter+"/";
@@ -397,10 +320,10 @@ public class Global_function {
                //String sp_new_attribute[]       = new_attribute.split("~");
                //String broker_primary[]         = sp_new_attribute[0].split(":");
                
-               String res_broker_primary       = getIp_broker()+":"+getPort_broker();
+               String res_broker_primary       = en.getIp_broker()+":"+en.getPort_broker();
              
-               String res_username_primary     = getUsername_broker();
-               String res_password_primary     = getPassword_broker();
+               String res_username_primary     = en.getUsername_broker();
+               String res_password_primary     = en.getPassword_broker();
                
                /* ssl://mqtt.cumulocity.com:8883 for a secure connection */
                //-------------------------------- TRANS CONNECTION ----------------------//
@@ -448,12 +371,12 @@ public class Global_function {
    public void publish_main_setting() {
       	try {
       		
-            String id_reporter = getId_reporter();
+            String id_reporter = en.getId_reporter();
                
       		 Parser_TASK = "MAIN_SETTING";
       		 Parser_ID = get_tanggal_curdate();
       		 Parser_SOURCE = "IDMReporter";
-      		 Parser_COMMAND = getTopic().toString();
+      		 Parser_COMMAND = en.getTopic().toString();
       		 Parser_OTP = "";
       		 Parser_TANGGAL_JAM = "";
       		 Parser_VERSI = "";
@@ -463,7 +386,7 @@ public class Global_function {
       		 Parser_SN_HDD = "";
       		 Parser_IP_ADDRESS = "";
       		 Parser_STATION = "";
-      		 Parser_CABANG = getCabang();
+      		 Parser_CABANG = en.getCabang();
       		 Parser_NAMA_FILE = "";
       		 Parser_CHAT_MESSAGE = "";
       		 Parser_REMOTE_PATH = "";
@@ -687,8 +610,8 @@ public class Global_function {
              //Properties p = new Properties();
              try {
                  
-                 ip_mongodb = getIp_mongodb();
-                 port_mongodb = getPort_mongodb();
+                 ip_mongodb = en.getIp_mongodb();
+                 port_mongodb = en.getPort_mongodb();
              } catch (Exception ex) {
                   System.err.println("ERROR READING setting.ini"+ex.getMessage());
              }
@@ -723,8 +646,8 @@ public class Global_function {
             
             try {
                 
-                ip_mongodb = getIp_mongodb();
-                port_mongodb = getPort_mongodb();
+                ip_mongodb = en.getIp_mongodb();
+                port_mongodb = en.getPort_mongodb();
             } catch (Exception ex) {
                  System.err.println("ERROR READING setting.ini"+ex.getMessage());
             }
@@ -1105,7 +1028,7 @@ public class Global_function {
             }
             
             if(con.isClosed()){
-                con = sqlcon.get_connection_db(getIp_database(),getUser_database(),getPass_database(),getPort_database(),getNama_database());
+                con = sqlcon.get_connection_db(en.getIp_database(),en.getUser_database(),en.getPass_database(),en.getPort_database(),en.getNama_database());
                 inter_login  = new Implement_ga(con);
                 
             }
@@ -1114,7 +1037,7 @@ public class Global_function {
           	  
             }else {
             	inter_login.call_upd_fetch(query, false);
-            	Boolean is_mongo_db_backup = Boolean.parseBoolean(getIs_mongo_db());
+            	Boolean is_mongo_db_backup = Boolean.parseBoolean(en.getIs_mongo_db());
             	if(is_mongo_db_backup.equals(true)) {
             		MongoLogger();
             		Document doc = Create_document(IN_CABANG, 
@@ -2138,22 +2061,22 @@ public class Global_function {
 	        try {
 	            //p.load(new FileInputStream("setting.ini"));
 	            //String maxvmusepercent = p.getProperty("maxvmusepercent");
-	            String  cleansession = getCleansession(); //p.getProperty("cleansession");
+	            String  cleansession = en.getCleansession(); //p.getProperty("cleansession");
 	            res_cleansession = Boolean.parseBoolean(cleansession);
 	            System.out.println("res_cleansession : "+res_cleansession);
 	            
-	            String keepalive = getKeepalive();//p.getProperty("keepalive");
+	            String keepalive = en.getKeepalive();//p.getProperty("keepalive");
 	            res_keepalive = Integer.parseInt(keepalive);
 	            
-	            String reconnect = getReconnect();//p.getProperty("reconnect");
+	            String reconnect = en.getReconnect();//p.getProperty("reconnect");
 	            Boolean res_reconnect = Boolean.parseBoolean(reconnect);
 	            System.out.println("res_reconnect : "+res_reconnect);
 	            
-	            String will_retained =  getWill_retained();//p.getProperty("will_retained");
+	            String will_retained =  en.getWill_retained();//p.getProperty("will_retained");
 	            Boolean res_will_retained = Boolean.parseBoolean(will_retained);
 	            System.out.println("will_retained\t:\t"+res_will_retained);
 	            
-	            String ip_mongo_db = getIp_mongodb();//p.getProperty("ip_mongodb");
+	            String ip_mongo_db = en.getIp_mongodb();//p.getProperty("ip_mongodb");
 	            System.out.println("ip_mongo_db : "+ip_mongo_db);
 	            
 	        } catch (Exception ex) {
@@ -2173,21 +2096,21 @@ public class Global_function {
 	            String sp_new_attribute[]       = new_attribute.split("~");
 	            //String broker_primary[]         = sp_new_attribute[0].split(":");
 	            
-	            String res_broker_primary       = getIp_broker()+":"+getPort_broker();//broker_primary[0]+":"+broker_primary[1];
+	            String res_broker_primary       = en.getIp_broker()+":"+en.getPort_broker();//broker_primary[0]+":"+broker_primary[1];
 	          
 	            String res_username_primary     = "";
-	            if(getUsername_broker().equals("")){
+	            if(en.getUsername_broker().equals("")){
 	            	//broker_primary[2];
 	            	res_username_primary = "";
 	            }else {
-	            	res_username_primary = getUsername_broker();
+	            	res_username_primary = en.getUsername_broker();
 	            }
 	            String res_password_primary     = "";
-	            if(getPassword_broker().equals("")){
+	            if(en.getPassword_broker().equals("")){
 	            	//broker_primary[2];
 	            	res_password_primary = "";
 	            }else {
-	            	res_password_primary = getPassword_broker();
+	            	res_password_primary = en.getPassword_broker();
 	            }
 	            //getPassword_broker();//broker_primary[3];
 
@@ -2201,8 +2124,7 @@ public class Global_function {
 	                client_transreport = new MqttClient(serverUrl, clientId,persistence);
 	                MqttConnectOptions options = new MqttConnectOptions();
 	                options.setCleanSession(res_cleansession);
-	             
-			options.setKeepAliveInterval(res_keepalive);
+	                options.setKeepAliveInterval(res_keepalive);
 	                options.setAutomaticReconnect(true);
 	                
 	                if(res_username_primary.equals("null")||res_password_primary.equals("null")){

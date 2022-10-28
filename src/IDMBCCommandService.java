@@ -21,8 +21,7 @@ import org.json.simple.parser.JSONParser;
 
 public class IDMBCCommandService {
 	MqttClient client_transreport;
-	Global_function gf = new Global_function();
-	Global_variable gv = new Global_variable();
+	Global_function gf = new Global_function(true);
 	Interface_ga inter_login;
 	Connection con;
 	SQLConnection sqlcon = new SQLConnection();
@@ -175,8 +174,8 @@ public class IDMBCCommandService {
 	public void BCCommandService(String rtopic_command,int qos_message_command) {
 		
 		try {
-			String branch_code = gf.getCabang();
-			String rtopic_bc_dc =  gf.getTopic();
+			String branch_code = gf.en.getCabang();
+			String rtopic_bc_dc =  gf.en.getTopic();
 			/*
 			System.out.println("Mulai Ambil data toko : "+gf.get_tanggal_curdate_curtime());			
 			String hasil_sync_data_toko = gf.store_toko_to_local(branch_code);
@@ -229,7 +228,7 @@ public class IDMBCCommandService {
 							gf.InsTransReport(Parser_TASK, Parser_ID, Parser_SOURCE, Parser_COMMAND, Parser_OTP,
 									Parser_TANGGAL_JAM, Parser_VERSI, Parser_HASIL, Parser_TO, Parser_FROM, Parser_SN_HDD,
 									Parser_IP_ADDRESS, Parser_STATION, Parser_CABANG, Parser_NAMA_FILE, Parser_CHAT_MESSAGE,
-									Parser_REMOTE_PATH, Parser_LOCAL_PATH, Parser_SUB_ID, Boolean.parseBoolean(gf.getTampilkan_query_console()), "INSERT", "transreport");
+									Parser_REMOTE_PATH, Parser_LOCAL_PATH, Parser_SUB_ID, Boolean.parseBoolean(gf.en.getTampilkan_query_console()), "INSERT", "transreport");
 						}
 								
 					}
@@ -250,8 +249,7 @@ public class IDMBCCommandService {
 			client_transreport = gf.get_ConnectionMQtt();
 			// ---------------------------- COMMAND -----------------------//
 			int qos_message_command = 0;
-			
-			String rtopic_command = gf.getTopic();
+			String rtopic_command = gf.en.getTopic();
 			System.out.println("SUBS : "+rtopic_command);
 			BCCommandService(rtopic_command,qos_message_command);
 			
