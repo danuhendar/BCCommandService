@@ -252,7 +252,6 @@ public class IDMBCCommandService {
 			String rtopic_command = gf.en.getTopic();
 			System.out.println("SUBS : "+rtopic_command);
 			BCCommandService(rtopic_command,qos_message_command);
-			
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		}
