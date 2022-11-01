@@ -294,20 +294,8 @@ public class Global_function {
 
    public void PublishMessageNotDocumenter(String topic,byte[] content,int counter,String plain_text_res_message,int qos){
            try {
-             
-               
-               SimpleDateFormat sformat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
                Date HariSekarang = new Date();
-               JSONParser parser = new JSONParser();
-               //-- sesi koneksi db --//
-               //String file_attribute           = ReadFile("attribute");
-               //String new_attribute            = sqlcon.DecodeString(file_attribute);
-               //System.out.println("new_attribute : "+new_attribute);
-               //String sp_new_attribute[]       = new_attribute.split("~");
-               //String broker_primary[]         = sp_new_attribute[0].split(":");
-               
                String res_broker_primary       = en.getIp_broker()+":"+en.getPort_broker();
-             
                String res_username_primary     = en.getUsername_broker();
                String res_password_primary     = en.getPassword_broker();
                
@@ -949,7 +937,7 @@ public class Global_function {
             boolean cek_table = inter_login.cek("SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;");
             if(cek_table == false){
               	  String sql_create = "SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;";
-              	  boolean create_table = create_table_mysql(nama_table_create);
+              	  create_table_mysql(nama_table_create);
               	  inter_login.call_upd_fetch(sql_create, false);
                 //System.out.println("SUKSES CREATE TABLE TRANSREPORT");
             }else{
@@ -1016,45 +1004,6 @@ public class Global_function {
             if(con.isClosed()){
                 con = sqlcon.get_connection_db(en.getIp_database(),en.getUser_database(),en.getPass_database(),en.getPort_database(),en.getNama_database());
                 inter_login  = new Implement_ga(con);
-                
-            }
-            
-            if(res_in_from == "") {
-          	  
-            }else {
-            	inter_login.call_upd_fetch(query, false);
-            	Boolean is_mongo_db_backup = Boolean.parseBoolean(en.getIs_mongo_db());
-            	if(is_mongo_db_backup.equals(true)) {
-            		MongoLogger();
-            		Document doc = Create_document(IN_CABANG, 
-    						IN_TASK.toUpperCase(), 
-    						IN_ID, 
-    						IN_SUB_ID, 
-    						IN_SOURCE,
-    						IN_FROM,
-    						IN_TO,
-    						IN_OTP,
-    						IN_STATION,
-    						IN_IP_ADDRESS,
-    						kdtk,
-    						nm_pc,
-    						IN_SN_HDD,
-    						IN_COMMAND.replaceAll("[^\\.A-Za-z0-9_]", " "),
-    						IN_HASIL.replaceAll("'", ""),
-    						IN_CHAT_MESSAGE,
-    						IN_NAMA_FILE,
-    						IN_REMOTE_PATH,
-    						IN_LOCAL_PATH,
-    						get_tanggal_curdate_curtime_for_log(true),
-    						IN_VERSI,
-    						get_tanggal_curdate_curtime_for_log(true)
-    						);
-            		
-            		InsertDocument("idmcmd", nama_table_create, doc);
-            		System.out.println("SUKSES INSERT MONGODB");
-            	}else {
-            		System.out.println("TIDAK INSERT MONGODB");
-            	}
                 res = "SUKSES INSERT TRANSREPORT";
             }
           
@@ -1285,11 +1234,7 @@ public class Global_function {
       
     public void PublishMessageAndDocumenter(String topic,byte[] content,int counter,String plain_text_res_message,int qos){
         try {
-          
-            
-            SimpleDateFormat sformat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
             Date HariSekarang = new Date();
-            JSONParser parser = new JSONParser();
             //-- sesi koneksi db --//
             String file_attribute           = ReadFile("attribute");
             String new_attribute            = sqlcon.DecodeString(file_attribute);
@@ -1513,10 +1458,6 @@ public class Global_function {
     
     public void del_history_log(){
         String tanggal = get_tanggal_curdate();
-        String curtime = get_tanggal_curdate_curtime_for_log(false);
-        
-        
-           
         String nama_file_except = "log_idmreporter_"+tanggal+".txt";
         String[] pathnames;
 
@@ -1739,7 +1680,6 @@ public class Global_function {
     
     public void PrintMessage(String FROM_THREAD,int counter,String msg_type,String topic,String Parser_TASK,String Parser_FROM,String Parser_TO,Date HariSekarang,Date HariSekarang_run){
         //=========================================================//
-        Global_variable gv = new Global_variable();
         SimpleDateFormat sformat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         System.out.println("\n");
         System.out.println("PUBLISH RECEIVE "+FROM_THREAD+" - "+counter+"");
@@ -1809,17 +1749,11 @@ public class Global_function {
     
     public void PrintMessage2(String FROM_THREAD,int counter,String msg_type,String topic,String Parser_TASK,String Parser_FROM,String Parser_TO,Date HariSekarang,Date HariSekarang_run){
         //=========================================================//
-        Global_variable gv = new Global_variable();
-        SimpleDateFormat sformat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-        //System.out.println("\n");
         System.out.println(FROM_THREAD+" : "+counter+" >> "+Parser_FROM);
     }
     
     public void PrintMessage3(String FROM_THREAD,int counter,String msg_type,String topic,String Parser_TASK,String Parser_FROM,String Parser_TO,Date HariSekarang,Date HariSekarang_run){
         //=========================================================//
-        Global_variable gv = new Global_variable();
-        SimpleDateFormat sformat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-        //System.out.println("\n");
         System.out.println(counter+" >> "+Parser_FROM.split("_")[0]+"_"+Parser_FROM.split("_")[1]);
     }
       
@@ -1882,7 +1816,6 @@ public class Global_function {
     			//ArrayList script_list = new ArrayList();
     			
     			for(int b = 0;b<res_hasil.length;b++) {
-    						JSONObject obj_cab = new JSONObject();
     						JSONArray script_data = new JSONArray();
     						String res_hasil_sp_field[] = res_hasil[b].split(";");
     						
@@ -2019,9 +1952,7 @@ public class Global_function {
     public MqttClient get_ConnectionMQtt() {
     	//Properties p = new Properties();
     	int res_keepalive = 60;
-    	Boolean res_cleansession = false;   
-    	int qos_message = 1;
-	        
+    	Boolean res_cleansession = false;
 	        try {
 	            //p.load(new FileInputStream("setting.ini"));
 	            //String maxvmusepercent = p.getProperty("maxvmusepercent");
@@ -2047,19 +1978,8 @@ public class Global_function {
 	            ex.printStackTrace();
 	        }
 	        
-	     
 	           
-	         
-	            SimpleDateFormat sformat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-	            Date HariSekarang = new Date();
-	            JSONParser parser = new JSONParser();
 	            //-- sesi koneksi db --//
-	            String file_attribute           = ReadFile("attribute");
-	            String new_attribute            = sqlcon.DecodeString(file_attribute);
-	            //System.out.println("new_attribute : "+new_attribute);
-	            String sp_new_attribute[]       = new_attribute.split("~");
-	            //String broker_primary[]         = sp_new_attribute[0].split(":");
-	            
 	            String res_broker_primary       = en.getIp_broker()+":"+en.getPort_broker();//broker_primary[0]+":"+broker_primary[1];
 	          
 	            String res_username_primary     = "";
@@ -2123,46 +2043,7 @@ public class Global_function {
         return encodedString;   
     } 
     
-    public void get_MonitoringResources(){
-        try {
-            
-             /*
-                Mencari selisih tanggal dari curdate dan tanggal up
-            */
-            SimpleDateFormat sformat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
-            Locale lokal = null;
-            String pola = "dd-MM-yyyy HH:mm:ss";
-
-            
-            DecimalFormat format = new DecimalFormat("##.##");
-            long total, free, used;
-            int mb = 1024*1024;
-            Runtime runtime = Runtime.getRuntime();
-            total = runtime.totalMemory();
-            free = runtime.freeMemory();
-            used = total - free;
-            double used_percent_memory = (double)used/(double)total*100;
-            double free_percent_memory = (double)free/(double)total*100;
-            
-            //System.out.println("VMMem\t:\t" + total / mb + " MB\t"+"Used\t:\t" + used / mb + " MB "+format.format(used_percent_memory)+ " %"+"\tFree\t:\t" + free / mb + " MB "+format.format(free_percent_memory)+ " %");
-           
-            int batas_memory = 50;    
-            if(used_percent_memory > batas_memory){
-                System.out.println("Exit IDMReporter Memory Usage > "+batas_memory+" % : Memory Saat ini : "+used_percent_memory+" %");
-                try {
-                	Runtime.getRuntime().exec("systemctl restart BCCommandMessageService");
-                }catch(Exception exc) {
-                	System.exit(0);
-                }
-                
-            }else{
-                
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
+   
     public void insProgramInstalled(String IN_Parser_HASIL,String IN_IP_Address) {
     	try {
     		
@@ -2201,8 +2082,6 @@ public class Global_function {
         						
         						String nama = "";
         						String versi = "";
-        						String publisher = "";
-        						String installDate = "";
         						try {
         							nama = res_hasil_sp_field[0].replaceAll("\"", "").trim();
         						}catch(Exception exc) {nama = "-";}

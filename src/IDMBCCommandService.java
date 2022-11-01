@@ -229,6 +229,10 @@ public class IDMBCCommandService {
 									Parser_TANGGAL_JAM, Parser_VERSI, Parser_HASIL, Parser_TO, Parser_FROM, Parser_SN_HDD,
 									Parser_IP_ADDRESS, Parser_STATION, Parser_CABANG, Parser_NAMA_FILE, Parser_CHAT_MESSAGE,
 									Parser_REMOTE_PATH, Parser_LOCAL_PATH, Parser_SUB_ID, Boolean.parseBoolean(gf.en.getTampilkan_query_console()), "INSERT", "transreport");
+							
+							String tanggal_jam = gf.get_tanggal_curdate_curtime();
+							gf.WriteFile("timemessage.txt", "", tanggal_jam, false);
+							
 						}
 								
 					}
