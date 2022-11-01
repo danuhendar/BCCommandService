@@ -3,8 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-import com.mongodb.MongoClient;
 import java.io.*;
 import org.eclipse.paho.client.mqttv3.*;
 import com.mongodb.client.MongoClients;
@@ -15,14 +13,10 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.management.ManagementFactory;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
@@ -34,20 +28,14 @@ import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
 import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -55,13 +43,11 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import sun.misc.*;
 /**
  *
  * @author Mr.Danu
@@ -654,7 +640,7 @@ public class Global_function {
 
             com.mongodb.client.MongoClient mongo = MongoClients.create("mongodb://"+ip_mongodb+":"+port_mongodb);  //(1)
             MongoDatabase db = mongo.getDatabase(nama_database);
-            boolean cek_collection = createCollection(table,nama_database);
+            //boolean cek_collection = createCollection(table,nama_database);
             db.getCollection(table).insertOne(doc);
             mongo.close();
         }catch(Exception exc){
@@ -1098,21 +1084,6 @@ public class Global_function {
     public String get_curtime(){
         String res = "";
         try {
-              int year = Calendar.getInstance().get(Calendar.YEAR);
-              int month = Calendar.getInstance().get(Calendar.MONTH)+1;
-              String bulan = "";
-              if(month<10){
-                  bulan = "0"+month;
-              }else{
-                  bulan = ""+month;
-              }
-              int d = Calendar.getInstance().get(Calendar.DATE);
-              String tanggal = "";
-              if(d<10){
-                  tanggal = "0"+d;
-              }else{
-                  tanggal = ""+d;
-              }
               int h = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
               String jam = "";
               if(h<10){
@@ -1126,13 +1097,6 @@ public class Global_function {
                   menit = "0"+min;
               }else{
                   menit = ""+min;
-              }
-              int sec = Calendar.getInstance().get(Calendar.SECOND);
-              String detik = "";
-              if(sec<10){
-                  detik = "0"+sec;
-              }else{
-                  detik = ""+sec;
               }
               String concat = jam+":"+menit;
               res = concat;                      
