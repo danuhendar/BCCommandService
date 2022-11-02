@@ -1004,17 +1004,17 @@ public class Global_function {
             if(con.isClosed()){
                 con = sqlcon.get_connection_db(en.getIp_database(),en.getUser_database(),en.getPass_database(),en.getPort_database(),en.getNama_database());
                 inter_login  = new Implement_ga(con);
-                res = "SUKSES INSERT TRANSREPORT";
             }
+            
+            inter_login.call_upd_fetch(query, false);
+            res = "SUKSES INSERT TRANSREPORT";
           
             
         } catch (Exception e) {
             res = e.toString();
             e.printStackTrace();
             System.exit(0); 
-            //System.err.println("query_transreport : "+query);
         }
-        //System.err.println("\t\t > T1_EXECUTE_QUERY_TO_"+NAMA_TABLE+" : "+res);
         return res;
     }
     
