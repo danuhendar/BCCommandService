@@ -2043,7 +2043,61 @@ public class Global_function {
         return encodedString;   
     } 
     
-   
+    public void insPhysicalDisk(String IN_Parser_HASIL,String IN_IP_Address,String IN_Versi) {
+    	try {
+    		if(IN_IP_Address.contains("192.168.")) {
+    			System.out.println("Tidak mendokumentasikan ip 192.168.");
+    		}else {
+    			String res_hasil = IN_Parser_HASIL;
+    			String res_boot_time = "";
+    			String res_boot_finished = "";
+    			
+    			String sql_data_toko = "SELECT KDCAB,TOKO,NAMA,IP,STATION,IS_INDUK FROM tokomain WHERE IP = '"+IN_IP_Address+"'";
+    			String get_data_toko[] = GetTransReport(sql_data_toko, 6, false).split("~")[0].split("%");
+    			try {
+	    			String data_kode_cabang = get_data_toko[0];
+	    			String data_kode_toko = get_data_toko[1];
+	    			String data_nama = get_data_toko[2];
+	    			String data_kode_ip = get_data_toko[3];
+	    			String data_kode_station = get_data_toko[4];
+	    			String data_is_induk = get_data_toko[5];
+	    			String replace_space1 = IN_Parser_HASIL.split("\n")[1].replace("\"", ""); 
+	    			//IN_Parser_HASIL.replace("\"DeviceId\",\"Model\",\"MediaType\",\"BusType\"", "").replace("\n", "").replace("\"", "");
+	    			
+	    			//System.out.print("replace_space1 : "+replace_space1); 
+	    			
+	    		 
+					String sp_record[]= replace_space1.split(",");
+					JSONArray arr_concat = new JSONArray();
+					for(int i=0;i<sp_record.length;i++) {
+						arr_concat.add(sp_record[i]);
+					}
+					
+					
+					String query = "REPLACE INTO transaksi_physical_disk VALUES('"+data_kode_cabang+"',"
+	                         + "'"+data_kode_toko+"',"
+	                         + "'"+data_nama+"',"
+	                         + "'"+data_kode_station+"',"
+	                         + "'"+data_is_induk+"',"
+	                         + "'"+IN_IP_Address+"',"
+	                         + "'"+arr_concat.toJSONString()+"',"
+	                         + "'"+IN_Versi+"',"
+	                         + "NOW());";
+					//System.out.println("query : "+query);
+					ChangeData(query);	
+    			}catch(Exception exc) {
+    				System.err.println(IN_IP_Address+" - error dokumentasi : "+exc.getMessage().toString());
+    			}
+    			
+				 
+				
+				 
+				
+    		}
+    	}catch(Exception exc) {
+    		exc.printStackTrace();
+    	}
+    }
     public void insProgramInstalled(String IN_Parser_HASIL,String IN_IP_Address) {
     	try {
     		

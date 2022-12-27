@@ -214,17 +214,17 @@ public class IDMBCCommandService {
 						if(Parser_TO.equals("ServiceProgram") && Parser_SOURCE.equals("IDMCommandListeners")){
 							String ip = Parser_IP_ADDRESS;
 							gf.ins_versi_program_toko(Parser_HASIL,ip);
-						}else if(Parser_TO.equals("ServiceProgramInstalled")){
+						}else if(Parser_TO.equals("ServiceProgramInstalled") && Parser_SOURCE.equals("IDMCommandListeners")){
 							//System.out.println("SIZE MESSAGE : "+message_ADT_Decompress.length());
 							//System.err.println(message_ADT_Decompress);
 							String ip = Parser_IP_ADDRESS;
 							gf.insProgramInstalled(Parser_HASIL,ip);
+						}else if(Parser_TO.equals("ServicePhysicalDisk") && Parser_SOURCE.equals("IDMCommandListeners")){
+							//System.out.println("SIZE MESSAGE : "+message_ADT_Decompress.length());
+							//System.err.println(message_ADT_Decompress);
+							String ip = Parser_IP_ADDRESS;
+							gf.insPhysicalDisk(Parser_HASIL,ip,Parser_VERSI);
 						}else {
-							/*
-							if(Parser_SOURCE.equals("IDMCommandListeners")) {
-								System.err.println("MESSAGE : "+message_ADT_Decompress+"\n");
-							}
-							*/
 							gf.InsTransReport(Parser_TASK, Parser_ID, Parser_SOURCE, Parser_COMMAND, Parser_OTP,
 									Parser_TANGGAL_JAM, Parser_VERSI, Parser_HASIL, Parser_TO, Parser_FROM, Parser_SN_HDD,
 									Parser_IP_ADDRESS, Parser_STATION, Parser_CABANG, Parser_NAMA_FILE, Parser_CHAT_MESSAGE,
