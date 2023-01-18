@@ -2061,29 +2061,14 @@ public class Global_function {
 	    			String data_kode_ip = get_data_toko[3];
 	    			String data_kode_station = get_data_toko[4];
 	    			String data_is_induk = get_data_toko[5];
-	    			//String replace_space1 = IN_Parser_HASIL.split("\n")[1].replace("\"", ""); 
-	    			//IN_Parser_HASIL.replace("\"DeviceId\",\"Model\",\"MediaType\",\"BusType\"", "").replace("\n", "").replace("\"", "");
+	    		
+	    			//System.out.println("HASIL : "+IN_Parser_HASIL);
 	    			
-	    			//System.out.print("replace_space1 : "+replace_space1); 
-	    			
-	    			/*
-	    			 *"DeviceId","Model","MediaType","BusType" "0","ADATA SU800","SSD","SATA" "DriveLetter","FileSystemType","DriveType","HealthStatus","OperationalStatus","SizeRemaining","Size" "C","NTFS","Fixed","Healthy","OK","59721625600","107730694144" "D","NTFS","Fixed","Healthy","OK","314227384320","403700707328" ,"NTFS","Fixed","Healthy","OK","98328576","554692608" ,"FAT32","Fixed","Healthy","OK","73149440","100663296"
-	    			 *
-	    			 * 
-	    			 */
-	    			
-	    			System.out.println("HASIL : "+IN_Parser_HASIL);
-	    			/*
-	    			 * 
-	    			 * "0";"ADATA SU800";"SSD";"SATA"
-						;"NTFS";"Fixed";"Healthy";"OK";"37523456";"52424704"
-						"E";"NTFS";"Fixed";"Healthy";"OK";"284086407168";"302392537088"
-						"C";"NTFS";"Fixed";"Healthy";"OK";"166058008576";"209189859328"
-						;"NTFS";"Fixed";"Healthy";"OK";"117854208";"471855104"
-	    			 */
 	    			JSONArray arr_concat_all = new JSONArray();
 	    			JSONArray arr_concat_disk = new JSONArray();
-	    			JSONArray arr_concat_vol = new JSONArray();
+	    			
+	    			JSONObject vol = new JSONObject();
+	    			
 					String sp_record[] = IN_Parser_HASIL.split("\n");
 					for(int i=0;i<sp_record.length;i++) {
 						
@@ -2108,59 +2093,24 @@ public class Global_function {
 							obj.put("perationalStatus", sp_koma[4].replace("\"", ""));
 							obj.put("SizeRemaining", sp_koma[5].replace("\"", ""));
 							obj.put("Size", sp_koma[6].replace("\"", ""));
+							
+							JSONArray arr_concat_vol = new JSONArray();
 							arr_concat_vol.add(obj);  
 							
+							
+							vol.put(sp_koma[0].replace("\"", ""), arr_concat_vol);
+							
+							
 						}
+						
+						arr_concat_all.add(vol);
 						
 					}
 					
-					arr_concat_all.add(arr_concat_vol); 
-					System.out.println("arr_concat_vol : "+arr_concat_vol.toJSONString());
+					//arr_concat_all.add(arr_concat_vol); 
+					//System.out.println("arr_concat_vol : "+arr_concat_vol.toJSONString());
 					System.out.println("arr_concat_all : "+arr_concat_all.toJSONString());
-					
-	    		    /*
-					JSONArray arr_concat_all = new JSONArray();
-					JSONArray arr_concat = new JSONArray();
-					//-- data physical disk --//
-					String split_data_1 = IN_Parser_HASIL.substring(IN_Parser_HASIL.indexOf("\"BusType\" "), IN_Parser_HASIL.indexOf(" \"DriveLetter\"")).replace("\"BusType\" ", "");
-	    			System.out.println("split_data_1 : "+split_data_1);
-					String sp_record[]= split_data_1.split(",");
-					for(int i=0;i<sp_record.length;i++) {
-						
-						arr_concat.add(sp_record[i]);
-						
-					}
-					arr_concat_all.add(arr_concat);
-					
-					
-					//-- data get volume --//
-					String split_data_2 = IN_Parser_HASIL.substring(IN_Parser_HASIL.indexOf("\"Size\" "),IN_Parser_HASIL.length()).replace("\"Size\" ", "");
-					System.out.println("split_data_2 : "+split_data_2);
-					// ,"NTFS","Fixed","Healthy","OK","37523456","52424704" "E","NTFS","Fixed","Healthy","OK","284127653888","302392537088" "C","NTFS","Fixed","Healthy","OK","166061617152","209189859328" ,"NTFS","Fixed","Healthy","OK","117854208","471855104"
-					JSONArray arr_concat2 = new JSONArray();
-					JSONArray arr_concat3 = new JSONArray();
-					String r = split_data_2.replace("\" ,\"","\" \"");
-					System.out.println("r : "+r);
-					String split_data_2_per_record[] = r.split("\" \"");
-					
-					for(int a=0;a<split_data_2_per_record.length;a++) {
-						System.out.println(split_data_2_per_record[a]);
-						String sp_record_2[]= split_data_2_per_record[a].split(",");
-						for(int i=0;i<sp_record_2.length;i++) {
-							
-							arr_concat2.add(sp_record_2[i]);
-							
-						}
-						arr_concat3.add(arr_concat2);
-					}
-					
-					
-					arr_concat_all.add(arr_concat3);
-					
-					
-					
-					
-					*/
+					System.out.println("vol : "+vol.toJSONString());
 					
 					String query = "REPLACE INTO transaksi_physical_disk VALUES('"+data_kode_cabang+"',"
 	                         + "'"+data_kode_toko+"',"
@@ -2188,6 +2138,7 @@ public class Global_function {
     		exc.printStackTrace();
     	}
     }
+    
     public void insProgramInstalled(String IN_Parser_HASIL,String IN_IP_Address) {
     	try {
     		
