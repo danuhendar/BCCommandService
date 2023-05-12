@@ -208,9 +208,10 @@ public class IDMBCCommandService {
 						counter++;
 						UnpackJSON(message_ADT_Decompress);
 					    //System.out.println("FROM TOPIC : "+topic+"\n");
+					    //System.out.println("MESSAGE : "+message_ADT_Decompress+"\n");
 					    
 						gf.PrintMessage2("RECV > "+rtopic_command+"", counter, msg_type, topic, Parser_TASK, Parser_FROM,Parser_TO, null, HariSekarang_run);
-						
+						System.out.println("===========================================");
 						if(Parser_TO.equals("ServiceProgram") && Parser_SOURCE.equals("IDMCommandListeners")){
 							String ip = Parser_IP_ADDRESS;
 							gf.ins_versi_program_toko(Parser_HASIL,ip);

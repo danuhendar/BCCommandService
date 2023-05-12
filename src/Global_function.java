@@ -933,15 +933,17 @@ public class Global_function {
            
             String tahun_bulan_tanggal = get_tanggal_curdate().replaceAll("-", "");
             String nama_table_create = NAMA_TABLE+""+tahun_bulan_tanggal;
-            //System.out.println("SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;");
-            boolean cek_table = inter_login.cek("SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;");
-            if(cek_table == false){
+            //System.out.println("nama_table_create : "+"SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;");
+            String cek_table = GetTransReport("SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;",1,true);
+            //System.out.println("cek_table  : "+cek_table);
+            if(cek_table == "0"){
               	  String sql_create = "SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;";
+              	  //System.out.println("sql_create : "+sql_create);
               	  create_table_mysql(nama_table_create);
               	  inter_login.call_upd_fetch(sql_create, false);
-                //System.out.println("SUKSES CREATE TABLE TRANSREPORT");
+              	  System.out.println("SUKSES CREATE TABLE TRANSREPORT");
             }else{
-                
+            	System.out.println("TABLE TRANSREPORT EXISTS");
             }
             
             if(NAMA_TABLE == "transreport"){
