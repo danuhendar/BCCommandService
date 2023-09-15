@@ -853,7 +853,7 @@ public class Global_function {
                         kdtk = "-";nm_pc = "-";
                   }
 
-                }else if(IN_SOURCE.equals("IDMCommander")){
+                }else if(IN_SOURCE.equals("IDMCommander") ){
                 	res_in_from = IN_TO;
                     res_in_to = IN_FROM;
                     try{
@@ -918,6 +918,28 @@ public class Global_function {
                         kdtk = "";
                         nm_pc = "";
                     }
+                }else {
+                	res_in_from = IN_TO;
+                    res_in_to = IN_FROM;
+                    
+                       try {
+                    	   kdtk = IN_FROM.split("_")[1].substring(0, 4);
+                           nm_pc = IN_FROM.split("_")[1];
+                       }catch(Exception exc) {
+                    	   
+                    	   //System.out.println("SELECT TOKO,STATION,KDCAB FROM tokomain where IP = '"+res_in_to+"'");
+                    	   String get_kdtk[] = GetTransReport("SELECT TOKO,STATION,KDCAB FROM tokomain where IP = '"+res_in_to+"'", 3, false).split("~")[0].split("%");
+                           kdtk = get_kdtk[0];
+                           IN_STATION = get_kdtk[1];
+                           res_in_kdcab = get_kdtk[2];
+                           try {
+                           	String get_nm_pc = GetTransReport("SELECT NAMA_PC FROM initreport where IP = '"+res_in_to+"'", 1, true);
+                           	nm_pc = get_nm_pc;
+                           	
+                           }catch(Exception exc1) {
+                           	 nm_pc = "-";
+                           }
+                       }
                 }
 
                 if(IN_IP_ADDRESS.contains("|")){
@@ -933,15 +955,17 @@ public class Global_function {
            
             String tahun_bulan_tanggal = get_tanggal_curdate().replaceAll("-", "");
             String nama_table_create = NAMA_TABLE+""+tahun_bulan_tanggal;
-            //System.out.println("SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;");
-            boolean cek_table = inter_login.cek("SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;");
-            if(cek_table == false){
+            //System.out.println("nama_table_create : "+"SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;");
+            String cek_table = GetTransReport("SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;",1,true);
+            //System.out.println("cek_table  : "+cek_table);
+            if(cek_table == "0"){
               	  String sql_create = "SELECT EXISTS(SELECT TABLE_NAME FROM information_schema.tables WHERE TABLE_NAME = '"+nama_table_create+"') AS CEK;";
+              	  //System.out.println("sql_create : "+sql_create);
               	  create_table_mysql(nama_table_create);
               	  inter_login.call_upd_fetch(sql_create, false);
-                //System.out.println("SUKSES CREATE TABLE TRANSREPORT");
+              	  //System.out.println("SUKSES CREATE TABLE TRANSREPORT");
             }else{
-                
+            	  //System.out.println("TABLE TRANSREPORT EXISTS");
             }
             
             if(NAMA_TABLE == "transreport"){
@@ -1000,6 +1024,13 @@ public class Global_function {
             }else{
                 
             }
+            
+//            if(IN_OTP.contains("SUPERVISI PERSONAL COMMAND")){
+//                System.err.println("query_transreport : "+query);
+//            }else{
+//                
+//            }
+            
             
             if(con.isClosed()){
                 con = sqlcon.get_connection_db(en.getIp_database(),en.getUser_database(),en.getPass_database(),en.getPort_database(),en.getNama_database());
@@ -1794,10 +1825,15 @@ public class Global_function {
         return null;
     }
     
-    public void ins_versi_program_toko(String IN_Parser_HASIL,String IN_IP_Address) {
+    public void ins_versi_program_toko(String IN_Parser_HASIL,String IN_IP_Address,String IN_Parser_COMMAND) {
     	try {
     		
     		WriteLog("HASIL PROGRAM : "+IN_Parser_HASIL, true);
+    		
+    		int index_awal = IN_Parser_COMMAND.indexOf("-path");
+    		int index_akhir = IN_Parser_COMMAND.indexOf("-include");
+    		String PATH_TRIGGER = IN_Parser_COMMAND.substring(index_awal, index_akhir).replace("'", "").replace("-path", "").replace("\\", "\\\\").trim();
+    		
     		if(IN_IP_Address.contains("192.168.")) {
     			System.out.println("Tidak mendokumentasikan ip 192.168.");
     		}else {
@@ -1923,9 +1959,9 @@ public class Global_function {
     						}		
     			}
     			
-    			String sql_transaksi = "REPLACE INTO transaksi_versi_program_toko VALUES('"+data_kode_cabang+"','"+data_kode_toko+"','"+data_kode_station+"','"+json_hasil+"',NOW());";
+    			String sql_transaksi = "REPLACE INTO transaksi_versi_program_toko VALUES('"+data_kode_cabang+"','"+data_kode_toko+"','"+data_kode_station+"','"+json_hasil+"','"+PATH_TRIGGER+"',NOW());";
 				//String sql_transaksi = "REPLACE INTO transaksi_versi_program_toko VALUES('"+data_kode_cabang+"','"+data_kode_toko+"','"+data_kode_station+"','"+data_kode_ip+"','"+nama+"','"+versi+"','"+versi_program_master+"','"+size+"','"+size_program_master+"','"+last_write+"','"+status+"',NOW(),'ServiceVersiProgram');";
-				//System.err.println(sql_transaksi);
+				System.err.println("sql_transaksi program toko : "+sql_transaksi);
 				//WriteLog("sql_transaksi : "+sql_transaksi, true);
 				ChangeData(sql_transaksi);
     		}
@@ -2212,5 +2248,34 @@ public class Global_function {
     		}
     	}catch(Exception exc) {exc.printStackTrace();}
     }
+    
+    public void insServiceSpy(String IN_Parser_HASIL,String IN_IP_Address) {
+    	try {
+    		if(IN_IP_Address.contains("192.168.")) {
+    			System.out.println("Tidak mendokumentasikan ip 192.168.");
+    		}else {
+    			String sql_data_toko = "SELECT KDCAB,TOKO,NAMA,IP,STATION FROM tokomain WHERE IP = '"+IN_IP_Address+"';";
+    			String get_data_toko[] = GetTransReport(sql_data_toko, 5, false).split("~")[0].split("%");
+    			String data_kode_cabang = get_data_toko[0];
+    			String data_kode_toko = get_data_toko[1];
+    			String data_nama = get_data_toko[2];
+    			String data_kode_ip = get_data_toko[3];
+    			String data_kode_station = get_data_toko[4];
+        		String json_hasil = "";
+    			String res_hasil = IN_Parser_HASIL.replaceAll("\\s","");
+    			
+    			if(data_kode_cabang.equals("")) {
+    				WriteLog("Data ip address tidak ditemukan : "+IN_IP_Address, true);
+    			}else {
+    				String sql_transaksi = "REPLACE INTO transaksi_spy_service VALUES('"+data_kode_cabang+"','"+data_kode_toko+"','"+data_kode_station+"','"+data_kode_ip+"','"+res_hasil+"',NOW());";
+    				//System.out.println(sql_transaksi);
+        			ChangeData(sql_transaksi);
+        			System.out.println(get_tanggal_curdate_curtime()+" - Selesai insert data spy service");
+    			}
+
+    		}
+    	}catch(Exception exc) {exc.printStackTrace();}
+    }
+
     
 }

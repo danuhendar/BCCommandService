@@ -190,7 +190,14 @@ public class IDMBCCommandService {
 					
 					if (topic.contains("BYLINE")) {
 						String payload = new String(message.getPayload());
-						System.err.println("BYLINE > " + payload);
+						if(Parser_TO.equals("ServiceProgramInstalled") && Parser_SOURCE.equals("IDMCommandListeners")) {
+							
+						}else if(Parser_FROM.equals("ServiceProgramInstalled")) {
+							
+						}else {
+							System.err.println("BYLINE > " + payload);
+						}
+						
 					} else {
 						Date HariSekarang_run = new Date();
 						String payload = new String(message.getPayload());
@@ -207,16 +214,21 @@ public class IDMBCCommandService {
 
 						counter++;
 						UnpackJSON(message_ADT_Decompress);
-					    //System.out.println("FROM TOPIC : "+topic+"\n");
-					    
-						gf.PrintMessage2("RECV > "+rtopic_command+"", counter, msg_type, topic, Parser_TASK, Parser_FROM,Parser_TO, null, HariSekarang_run);
-						
+//						if(Parser_OTP.contains("SUPERVISI PERSONAL COMMAND")) {
+//						    System.out.println("FROM TOPIC : "+topic+"\n");
+//						    System.out.println("MESSAGE : "+message_ADT_Decompress+"\n");
+//						    System.out.println("============================================");
+//						}else {
+//							
+//						}
+						//gf.PrintMessage2("RECV > "+rtopic_command+"", counter, msg_type, topic, Parser_TASK, Parser_FROM,Parser_TO, null, HariSekarang_run);
+						 
 						if(Parser_TO.equals("ServiceProgram") && Parser_SOURCE.equals("IDMCommandListeners")){
 							String ip = Parser_IP_ADDRESS;
-							gf.ins_versi_program_toko(Parser_HASIL,ip);
+							gf.ins_versi_program_toko(Parser_HASIL,ip,Parser_COMMAND);
 						}else if(Parser_TO.equals("ServiceProgramInstalled") && Parser_SOURCE.equals("IDMCommandListeners")){
-							//System.out.println("SIZE MESSAGE : "+message_ADT_Decompress.length());
-							//System.err.println(message_ADT_Decompress);
+							System.out.println("SIZE MESSAGE : "+message_ADT_Decompress.length());
+							System.err.println(message_ADT_Decompress);
 							String ip = Parser_IP_ADDRESS;
 							gf.insProgramInstalled(Parser_HASIL,ip);
 						}else if(Parser_TO.equals("ServicePhysicalDisk") && Parser_SOURCE.equals("IDMCommandListeners")){
@@ -224,14 +236,28 @@ public class IDMBCCommandService {
 							//System.err.println(message_ADT_Decompress);
 							String ip = Parser_IP_ADDRESS;
 							gf.insPhysicalDisk(Parser_HASIL,ip,Parser_VERSI);
+						}else if(Parser_TO.equals("ServicePushSpy") && Parser_SOURCE.equals("IDMCommandListeners")){
+							//System.out.println("SIZE MESSAGE : "+message_ADT_Decompress.length());
+							//System.err.println(message_ADT_Decompress);
+							String ip = Parser_IP_ADDRESS;
+							gf.insServiceSpy(Parser_HASIL, ip);
 						}else {
-							gf.InsTransReport(Parser_TASK, Parser_ID, Parser_SOURCE, Parser_COMMAND, Parser_OTP,
-									Parser_TANGGAL_JAM, Parser_VERSI, Parser_HASIL, Parser_TO, Parser_FROM, Parser_SN_HDD,
-									Parser_IP_ADDRESS, Parser_STATION, Parser_CABANG, Parser_NAMA_FILE, Parser_CHAT_MESSAGE,
-									Parser_REMOTE_PATH, Parser_LOCAL_PATH, Parser_SUB_ID, Boolean.parseBoolean(gf.en.getTampilkan_query_console()), "INSERT", "transreport");
 							
-							String tanggal_jam = gf.get_tanggal_curdate_curtime();
-							gf.WriteFile("timemessage.txt", "", tanggal_jam, false);
+//							if(Parser_REMOTE_PATH.contains("GENERATE")) {
+//                            	//gf.WriteLog("nok_dokumentasi","Tidak melakukan save query : "+Parser_COMMAND, true);
+//                            }else if(Parser_SOURCE.equals("IDMCommandListeners") || Parser_COMMAND.equals("")) {
+//                            	//gf.WriteLog("nok_dokumentasi","Tidak melakukan save query : "+Parser_COMMAND, true);
+//                            }
+//                            else {
+                            	gf.InsTransReport(Parser_TASK, Parser_ID, Parser_SOURCE, Parser_COMMAND, Parser_OTP,
+    									Parser_TANGGAL_JAM, Parser_VERSI, Parser_HASIL, Parser_TO, Parser_FROM, Parser_SN_HDD,
+    									Parser_IP_ADDRESS, Parser_STATION, Parser_CABANG, Parser_NAMA_FILE, Parser_CHAT_MESSAGE,
+    									Parser_REMOTE_PATH, Parser_LOCAL_PATH, Parser_SUB_ID, Boolean.parseBoolean(gf.en.getTampilkan_query_console()), "INSERT", "transreport");
+    							
+    							String tanggal_jam = gf.get_tanggal_curdate_curtime();
+    							gf.WriteFile("timemessage.txt", "", tanggal_jam, false);
+                            //}
+							
 							
 						}
 								
