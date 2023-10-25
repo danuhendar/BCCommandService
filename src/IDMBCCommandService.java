@@ -214,14 +214,7 @@ public class IDMBCCommandService {
 
 						counter++;
 						UnpackJSON(message_ADT_Decompress);
-//						if(Parser_OTP.contains("SUPERVISI PERSONAL COMMAND")) {
-//						    System.out.println("FROM TOPIC : "+topic+"\n");
-//						    System.out.println("MESSAGE : "+message_ADT_Decompress+"\n");
-//						    System.out.println("============================================");
-//						}else {
-//							
-//						}
-						//gf.PrintMessage2("RECV > "+rtopic_command+"", counter, msg_type, topic, Parser_TASK, Parser_FROM,Parser_TO, null, HariSekarang_run);
+						gf.PrintMessage2("RECV > "+rtopic_command+"", counter, msg_type, topic, Parser_TASK, Parser_FROM,Parser_TO, null, HariSekarang_run);
 						 
 						if(Parser_TO.equals("ServiceProgram") && Parser_SOURCE.equals("IDMCommandListeners")){
 							String ip = Parser_IP_ADDRESS;
@@ -236,11 +229,6 @@ public class IDMBCCommandService {
 							//System.err.println(message_ADT_Decompress);
 							String ip = Parser_IP_ADDRESS;
 							gf.insPhysicalDisk(Parser_HASIL,ip,Parser_VERSI);
-						}else if(Parser_TO.equals("ServicePushSpy") && Parser_SOURCE.equals("IDMCommandListeners")){
-							//System.out.println("SIZE MESSAGE : "+message_ADT_Decompress.length());
-							//System.err.println(message_ADT_Decompress);
-							String ip = Parser_IP_ADDRESS;
-							gf.insServiceSpy(Parser_HASIL, ip);
 						}else {
 							
 //							if(Parser_REMOTE_PATH.contains("GENERATE")) {
