@@ -244,6 +244,7 @@ public class IDMBCCommandService {
     							
     							String tanggal_jam = gf.get_tanggal_curdate_curtime();
     							gf.WriteFile("timemessage.txt", "", tanggal_jam, false);
+    							System.gc();
                             //}
 							
 							
